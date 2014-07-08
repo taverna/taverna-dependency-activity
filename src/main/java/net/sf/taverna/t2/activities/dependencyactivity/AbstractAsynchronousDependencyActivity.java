@@ -20,6 +20,7 @@
  ******************************************************************************/
 package net.sf.taverna.t2.activities.dependencyactivity;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.lang.ref.WeakReference;
@@ -27,19 +28,15 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.WeakHashMap;
-
 import net.sf.taverna.t2.facade.WorkflowInstanceFacade;
 import net.sf.taverna.t2.workflowmodel.Dataflow;
+import net.sf.taverna.t2.workflowmodel.Edits;
 import net.sf.taverna.t2.workflowmodel.Processor;
 import net.sf.taverna.t2.workflowmodel.processor.activity.AbstractAsynchronousActivity;
 import net.sf.taverna.t2.workflowmodel.processor.activity.Activity;
 import net.sf.taverna.t2.workflowmodel.processor.activity.NestedDataflow;
-
 import org.apache.log4j.Logger;
-
 import uk.org.taverna.configuration.app.ApplicationConfiguration;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * A parent abstract class for activities that require dependency management, such as
@@ -58,6 +55,11 @@ public abstract class AbstractAsynchronousDependencyActivity extends AbstractAsy
 
 	private static Logger logger = Logger.getLogger(AbstractAsynchronousDependencyActivity.class);
 
+        public AbstractAsynchronousDependencyActivity(Edits edits){
+            super(edits);
+        }
+                
+                
 	/**
 	 * For persisting class loaders across a whole workflow run (when classloader sharing
 	 * is set to 'workflow'). The key in the map is the workflow run ID and we are using
@@ -105,7 +107,8 @@ public abstract class AbstractAsynchronousDependencyActivity extends AbstractAsy
 	    }
 	}
 
-	public AbstractAsynchronousDependencyActivity(ApplicationConfiguration applicationConfiguration) {
+	public AbstractAsynchronousDependencyActivity(Edits edits, ApplicationConfiguration applicationConfiguration) {
+                super(edits);
 		if (applicationConfiguration != null) {
 			libDir = new File(applicationConfiguration.getApplicationHomeDir(), "lib");
 		}
